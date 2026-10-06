@@ -1,0 +1,37 @@
+[project]
+name = "automatic-fraud-detection-ml"
+version = "0.1.0"
+description = "Automatic fraud detection pipeline"
+readme = "README.md"
+authors = [
+    { name = "pf6511", email = "pfelz@free.fr" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "boto3>=1.43.105",
+    "jupyter>=1.1.1",
+    "matplotlib>=3.11.2",
+    "mlflow>=3.16.1",
+    "numpy>=2.5.3",
+    "pandas>=3.0.6",
+    "plotly>=7.1.0",
+    "python-dotenv>=1.2.3",
+    "scikit-learn>=1.9.1",
+    "scipy>=1.18.1",
+     "fraud-detection-features",
+]
+
+[project.scripts]
+automatic-fraud-detection = "automatic_fraud_detection_ml:main"
+
+[build-system]
+requires = ["uv_build>=0.12.19,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
+
+[tool.uv.sources]
+fraud-detection-features = { path = "../fraud-detection-features", editable = true }
