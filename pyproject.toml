@@ -18,7 +18,9 @@ dependencies = [
     "python-dotenv>=1.2.3",
     "scikit-learn>=1.9.1",
     "scipy>=1.18.1",
-     "fraud-detection-features",
+    "fraud-detection-features",
+    "fraud-detection-database",
+    "sqlalchemy>=2.1.3",
 ]
 
 [project.scripts]
@@ -35,3 +37,4 @@ dev = [
 
 [tool.uv.sources]
 fraud-detection-features = { path = "../fraud-detection-features", editable = true }
+fraud-detection-database = { path = "../fraud-detection-database", editable = true }

@@ -23,10 +23,16 @@ from automatic_fraud_detection_ml.model import  (
     build_model
 )
 from automatic_fraud_detection_ml.training import train_model
-from automatic_fraud_detection_ml.tracking import configure_mlflow
+from automatic_fraud_detection_ml.tracking import (
+    configure_mlflow,
+    get_registered_model_version,
+    register_model_version_in_database)
+
 from automatic_fraud_detection_ml.evaluation import evaluate_thresholds, evaluate_at_threshold
 
 from automatic_fraud_detection_ml.business import FraudDetectionBusinessRules
+
+from fraud_detection_database.database import AdminSessionLocal
 
 from pathlib import Path
 import pandas as pd
@@ -191,6 +197,29 @@ def main() -> None:
                 "sklearn.tree._tree.Tree",
             ],           
         )
+
+        registered_model_version = get_registered_model_version(
+            model_name="fraud-detection-random-forest",
+            run_id=run.info.run_id,
+        )
+
+        with AdminSessionLocal() as session:
+            try:
+                register_model_version_in_database(
+                    session=session,
+                    model_name="fraud-detection-random-forest",
+                    model_version=registered_model_version.version,
+                    run_id=run.info.run_id,
+                    model_uri=registered_model_version.source,
+                    threshold=FraudDetectionBusinessRules.FRAUD_THRESHOLD,
+                    feature_version="card_history_v2",
+                )
+
+                session.commit()
+
+            except Exception:
+                session.rollback()
+                raise
 
         print("Validation metrics:")
         print(val_metrics)
