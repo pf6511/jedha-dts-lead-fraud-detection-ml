@@ -1026,6 +1026,9 @@ requires-dist = [
     { name = "sqlalchemy", specifier = ">=2.1.2" },
 ]
 
+[package.metadata.requires-dev]
+dev = [{ name = "pytest", specifier = ">=9.1.1" }]
+
 [[package]]
 name = "fraud-detection-features"
 version = "0.1.0"

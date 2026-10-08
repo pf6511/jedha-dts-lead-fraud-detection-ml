@@ -32,7 +32,8 @@ from automatic_fraud_detection_ml.evaluation import evaluate_thresholds, evaluat
 
 from automatic_fraud_detection_ml.business import FraudDetectionBusinessRules
 
-from fraud_detection_database.database import AdminSessionLocal
+from fraud_detection_database.database import Database
+from fraud_detection_database.environment import Environment
 
 from pathlib import Path
 import pandas as pd
@@ -51,6 +52,12 @@ THRESHOLDS = [
 
 RUN_NAME = "random-forest-card-history"
 
+def get_database_access() -> Database:
+    environment = Environment("./secrets.env")
+    return Database(
+        database_url=environment.env_var("DATABASE_URL"),
+        admin_database_url=environment.env_var("ADMIN_DATABASE_URL"),
+    )
 
 def main() -> None:
     configure_mlflow()
@@ -203,7 +210,7 @@ def main() -> None:
             run_id=run.info.run_id,
         )
 
-        with AdminSessionLocal() as session:
+        with get_database_access().AdminSessionLocal() as session:
             try:
                 register_model_version_in_database(
                     session=session,

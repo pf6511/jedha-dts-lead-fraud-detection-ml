@@ -10,7 +10,8 @@ from automatic_fraud_detection_ml.tracking import (
     register_model_version_in_database
 )
 
-from fraud_detection_database.database import AdminSessionLocal
+from fraud_detection_database.database import Database
+from fraud_detection_database.environment import Environment
 
 from fraud_detection_database.models.model_version import (
     ModelVersion as DatabaseModelVersion,
@@ -21,6 +22,12 @@ from sqlalchemy import select
 
 MODEL_NAME = "fraud-detection-random-forest"
 
+def get_database_access() -> Database:
+    environment = Environment("./secrets.env")
+    return Database(
+        database_url=environment.env_var("DATABASE_URL"),
+        admin_database_url=environment.env_var("ADMIN_DATABASE_URL"),
+    )
 
 def test_get_registered_model_version():
     configure_mlflow()
@@ -45,7 +52,7 @@ def test_get_registered_model_version():
 
 
 def test_register_model_version_in_database():
-    with AdminSessionLocal() as session:
+    with get_database_access().AdminSessionLocal() as session:
         try:
             register_model_version_in_database(
                 session=session,
