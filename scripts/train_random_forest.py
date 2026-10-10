@@ -110,7 +110,8 @@ def main() -> None:
             p0=p0,
             alpha=FraudDetectionBusinessRules.ALPHA,
         )
-
+        #print(dtf.isna().sum().loc[lambda x: x > 0])
+        
         dtf_train = dtf.iloc[:train_end]
         dtf_val = dtf.iloc[train_end:val_end]
         dtf_test = dtf.iloc[val_end:]
